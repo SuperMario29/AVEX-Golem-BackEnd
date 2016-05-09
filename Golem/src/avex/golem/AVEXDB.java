@@ -30,10 +30,10 @@ public class AVEXDB {
 		List<BasicDBObject> athleteList = new ArrayList<>();
 		
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+    	
         // Now connect to your databases
-        DB db = mongoClient.getDB("avexchange" );
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -68,10 +68,10 @@ public class AVEXDB {
 		try
 		{
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
-        // Now connect to your databases
-        DB db = mongoClient.getDB( "avexchange" );
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -109,10 +109,10 @@ public class AVEXDB {
 		try
 		{
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
-        // Now connect to your databases
-        DB db = mongoClient.getDB( "avexchange" );
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -157,10 +157,10 @@ public class AVEXDB {
 	public void UpdateCurrentPrice(int athleteID, DBObject value){
 		try{
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
-        // Now connect to your databases
-        DB db = mongoClient.getDB( "avexchange" );
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -204,10 +204,10 @@ public class AVEXDB {
 		try
 		{
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
-        // Now connect to your databases
-        DB db = mongoClient.getDB( "avexchange" );
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -246,10 +246,10 @@ public class AVEXDB {
 		try
 		{
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
-        // Now connect to your databases
-        DB db = mongoClient.getDB( "avexchange" );
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -307,10 +307,10 @@ public class AVEXDB {
 			List<Customer> customerList = new ArrayList<>();
 		
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
-        // Now connect to your databases
-        DB db = mongoClient.getDB( "avexchange" );
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -349,10 +349,10 @@ public class AVEXDB {
 		List<Order> orderList = new ArrayList<>();
 		
         // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-			
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , 27017 );
+    	
         // Now connect to your databases
-        DB db = mongoClient.getDB( "avexchange" );
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
