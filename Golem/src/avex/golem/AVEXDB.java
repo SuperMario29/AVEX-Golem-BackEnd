@@ -184,7 +184,7 @@ public class AVEXDB {
             BasicDBObject setPrice = new BasicDBObject().append("$set", new BasicDBObject().append("currentprice", currentPrice));
             BasicDBObject priceHistory = new BasicDBObject().append("price",currentPrice);
             priceHistory.append("isathletevalueprice", true);
-            priceHistory.append("recordstatusdate", new Date());
+            priceHistory.append("recordstatusdate", new Date().getTime());
             priceHistory.append("recordstatus", 1);
             setPrice.append("$push", new BasicDBObject().append("pricehistory", priceHistory));
             athleteCollect.update(queryFindAthlete, setPrice);
@@ -274,7 +274,7 @@ public class AVEXDB {
             BasicDBObject athleteIPO = new BasicDBObject().append("orderid",orderseq);
             athleteIPO.append("actiontype", "sell");
             athleteIPO.append("quantity", numberofshares);
-            athleteIPO.append("recordstatusdate", new Date());
+            athleteIPO.append("recordstatusdate", new Date().getTime());
             athleteIPO.append("recordstatus", 1);
             athleteIPO.append("extathleteid", athleteID);
             BasicDBObject setOrders = new BasicDBObject().append("$push", new BasicDBObject().append("listorders", athleteIPO));
