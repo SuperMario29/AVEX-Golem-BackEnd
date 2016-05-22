@@ -124,7 +124,7 @@ public class AthleteMaintenance {
         	price = Math.floor((price * 10000) * 100)/ 100;
         }       
                
-           long date = new Date().getTime();
+           Date date = new Date();
    		
    			BasicDBObject athleteValueRating = new BasicDBObject();
    			athleteValueRating.append("athletevalue", Math.floor((value / valueList.size()) * 100) / 100);
