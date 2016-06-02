@@ -1,19 +1,19 @@
 package avex.models;
+import java.util.Date;
 import java.util.List;
 
-public class Order {
+import com.mongodb.BasicDBObject;
+
+public class Order extends BasicDBObject  implements Comparable<Order> {
 	
-    private String playerquote,actiontype,ordertype,quantity,recordStatusDate;
-    private long athleteID,customerID,customerPositionId;
-    private double estimatecommission, estimatedCost;
+    private String quote,actiontype,ordertype,athleteID,customerID,orderid;
+    private double commission, cost,price;
     private List<Transaction> transactionList;
-    private int recordStatus;
-	public String getPlayerquote() {
-		return playerquote;
-	}
-	public void setPlayerquote(String playerquote) {
-		this.playerquote = playerquote;
-	}
+    private int recordStatus,quantity;
+    private Date recordstatusdate;
+    private Boolean ispending;
+
+    
 	public String getActiontype() {
 		return actiontype;
 	}
@@ -26,48 +26,7 @@ public class Order {
 	public void setOrdertype(String ordertype) {
 		this.ordertype = ordertype;
 	}
-	public String getQuantity() {
-		return quantity;
-	}
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
-	}
-	public String getRecordStatusDate() {
-		return recordStatusDate;
-	}
-	public void setRecordStatusDate(String recordStatusDate) {
-		this.recordStatusDate = recordStatusDate;
-	}
-	public long getAthleteID() {
-		return athleteID;
-	}
-	public void setAthleteID(long athleteID) {
-		this.athleteID = athleteID;
-	}
-	public long getCustomerID() {
-		return customerID;
-	}
-	public void setCustomerID(long customerID) {
-		this.customerID = customerID;
-	}
-	public long getCustomerPositionId() {
-		return customerPositionId;
-	}
-	public void setCustomerPositionId(long customerPositionId) {
-		this.customerPositionId = customerPositionId;
-	}
-	public double getEstimatecommission() {
-		return estimatecommission;
-	}
-	public void setEstimatecommission(double estimatecommission) {
-		this.estimatecommission = estimatecommission;
-	}
-	public double getEstimatedCost() {
-		return estimatedCost;
-	}
-	public void setEstimatedCost(double estimatedCost) {
-		this.estimatedCost = estimatedCost;
-	}
+
 	public List<Transaction> getTransactionList() {
 		return transactionList;
 	}
@@ -80,5 +39,72 @@ public class Order {
 	public void setRecordStatus(int recordStatus) {
 		this.recordStatus = recordStatus;
 	}
+	
+	public Date getRecordstatusdate() {
+		return recordstatusdate;
+	}
+	public void setRecordstatusdate(Date recordstatusdate) {
+		this.recordstatusdate = recordstatusdate;
+	}
+	
+	  @Override
+	  public int compareTo(Order o) {
+	    return getRecordstatusdate().compareTo(o.getRecordstatusdate());
+	  }
+	public String getQuote() {
+		return quote;
+	}
+	public void setQuote(String quote) {
+		this.quote = quote;
+	}
+	public String getAthleteID() {
+		return athleteID;
+	}
+	public void setAthleteID(String athleteID) {
+		this.athleteID = athleteID;
+	}
+	public String getCustomerID() {
+		return customerID;
+	}
+	public void setCustomerID(String customerID) {
+		this.customerID = customerID;
+	}
+	public double getCommission() {
+		return commission;
+	}
+	public void setCommission(double commission) {
+		this.commission = commission;
+	}
+	public double getCost() {
+		return cost;
+	}
+	public void setCost(double cost) {
+		this.cost = cost;
+	}
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		this.price = price;
+	}
+	public Boolean getIspending() {
+		return ispending;
+	}
+	public void setIspending(Boolean ispending) {
+		this.ispending = ispending;
+	}
+	public String getOrderid() {
+		return orderid;
+	}
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
     
 }

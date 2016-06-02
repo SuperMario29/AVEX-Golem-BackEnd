@@ -12,13 +12,13 @@ import avex.models.*;
 
 public class AthleteMaintenance {
 
-	public void AthleticUpKeep(Date orderDate)
+	public void AthleticUpKeep()
 	{
 		AVEXDB avexDB = new AVEXDB();
 		AthleteDataApi athleteAPI = new AthleteDataApi();
 		Map<Integer,BasicDBObject> athleteValueMap = new HashMap<Integer,BasicDBObject>();
 		
-		List<BasicDBObject> results = avexDB.GetAthletes(orderDate);
+		List<BasicDBObject> results = avexDB.GetAthletes();
 		if (results != null)
 		{
 		for(BasicDBObject athlete:results)

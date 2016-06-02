@@ -12,6 +12,7 @@ import avex.models.Order;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.DBCursor;
@@ -22,7 +23,7 @@ import org.json.simple.parser.JSONParser;
 public class AVEXDB {
 
 	@SuppressWarnings("deprecation")
-	public List<BasicDBObject> GetAthletes(Date orderDate)
+	public List<BasicDBObject> GetAthletes()
 	{
         int i = 1;
 		try
@@ -54,6 +55,403 @@ public class AVEXDB {
         mongoClient.close();
 
 		return athleteList;
+		}
+		catch(Exception ex)
+		{
+            System.out.println("Exception: " + ex.toString()); 
+			return null;
+		}
+	}
+	
+	public BasicDBObject GetUser(String customerid){
+		BasicDBObject results = new BasicDBObject();
+		
+		try
+		{		
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+    	
+        // Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection customerCollection = db.getCollection("customers");
+        System.out.println("Collection athletes selected successfully");
+		        
+        results = (BasicDBObject) customerCollection.findOne(new BasicDBObject().append("_id", customerid));
+			
+
+        mongoClient.close();
+
+		return results;
+		}
+		catch(Exception ex)
+		{
+            System.out.println("Exception: " + ex.toString()); 
+			return null;
+		}
+	}
+	
+	public boolean SaveUser(BasicDBObject user){
+		try
+		{
+        // To connect to mongodb server
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection customersCollect = db.getCollection("customers");
+        System.out.println("Collection athletes selected successfully");
+		
+    	BasicDBObject queryFind = new BasicDBObject();
+    	queryFind.append("_id", user.getString("_id"));
+    	
+    	customersCollect.update(queryFind, user);
+    	
+        mongoClient.close();
+		
+        return true;
+        
+		}
+		catch(Exception ex)
+		{
+			return false;
+		}
+	}
+	
+	public boolean SaveOrder(Order order){
+		try
+		{
+        // To connect to mongodb server
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection ordersCollect = db.getCollection("orders");
+        System.out.println("Collection athletes selected successfully");
+		
+
+    	BasicDBObject queryFind = new BasicDBObject();
+    	queryFind.append("_id", order.getString("_id"));
+    	
+    	ordersCollect.update(queryFind, order);
+    	
+        mongoClient.close();
+		
+        return true;
+        
+		}
+		catch(Exception ex)
+		{
+			return false;
+		}
+	}
+	
+	public void CompleteAthleteQueue(String athleteid){
+		try
+		{		
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+    	
+        // Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection athleteCollection = db.getCollection("athletes");
+        System.out.println("Collection athletes selected successfully");
+		                
+        athleteCollection.update(new BasicDBObject().append("_id", athleteid), new BasicDBObject().append("$inc", new BasicDBObject().append("currentqueue", 1)));
+	
+        mongoClient.close();
+
+		}
+		catch(Exception ex)
+		{
+            System.out.println("Exception: " + ex.toString()); 
+		}
+		
+		
+	}
+	
+	public boolean SaveAthlete(BasicDBObject athlete){		
+		try
+		{
+        // To connect to mongodb server
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection athleteCollect = db.getCollection("athletes");
+        System.out.println("Collection athletes selected successfully");
+		
+
+    	BasicDBObject queryFindAthlete = new BasicDBObject();
+    	queryFindAthlete.append("_id", athlete.getString("_id"));
+    	
+    	athleteCollect.update(queryFindAthlete, athlete);
+    	
+        mongoClient.close();
+		
+        return true;
+        
+		}
+		catch(Exception ex)
+		{
+			return false;
+		}
+	}
+	
+	public BasicDBObject GetSettings(){
+		BasicDBObject results = new BasicDBObject();
+		
+		try
+		{
+        // To connect to mongodb server
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection settingsCollect = db.getCollection("settings");
+        System.out.println("Collection athletes selected successfully");
+		
+        
+    	results = (BasicDBObject) settingsCollect.findOne();
+    	 
+			
+        mongoClient.close();
+		
+		}
+		catch(Exception ex)
+		{
+		}
+		
+		return results;
+	}
+	
+	public BasicDBObject GetAthleteByID(String athleteID){
+		BasicDBObject results = new BasicDBObject();
+		
+		try
+		{
+        // To connect to mongodb server
+	        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+	    	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection athleteCollect = db.getCollection("athletes");
+        System.out.println("Collection athletes selected successfully");
+		
+
+    	BasicDBObject queryFindAthlete = new BasicDBObject();
+    	queryFindAthlete.append("athleteid", athleteID);
+        
+    	results = (BasicDBObject) athleteCollect.findOne(queryFindAthlete);
+    	 
+			
+        mongoClient.close();
+		
+		}
+		catch(Exception ex)
+		{
+		}
+		
+		
+		return results;		
+	}
+	
+	public List<BasicDBObject> GetOrderByAthleteId(int actiontype, String athleteID){
+		List<BasicDBObject> results = new ArrayList<>();
+				
+		try
+		{	
+			List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+			obj.add(new BasicDBObject().append("athleteid", athleteID));
+			obj.add(new BasicDBObject().append("recordstatus", new BasicDBObject().append("$ne", 3)));
+			obj.add(new BasicDBObject().append("recordstatus", new BasicDBObject().append("$ne", 4)));
+			
+			//ActionType 1 equals Buy Order
+			if(actiontype == 1){
+				obj.add(new BasicDBObject().append("actiontype", "sell"));
+			}
+			//ActionType 2 equals Sell Order
+			else if(actiontype == 2){
+				obj.add(new BasicDBObject().append("actiontype", "buy"));	
+			}
+			
+			BasicDBObject andQuery = new BasicDBObject();
+			andQuery.put("$and", obj);	
+			
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+    	
+        // Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection ordersCollection = db.getCollection("orders");
+        System.out.println("Collection athletes selected successfully");
+        		
+        DBCursor cursor = ordersCollection.find(andQuery).sort(new BasicDBObject().append("recordstatusdate", -1));
+			
+        while (cursor.hasNext()) { 
+           BasicDBObject order = (BasicDBObject) cursor.next();
+           results.add(order); 
+        }
+        
+        System.out.println("Received orders"); 
+
+        mongoClient.close();
+
+		return results;
+		}
+		catch(Exception ex)
+		{
+            System.out.println("Exception: " + ex.toString()); 
+			return null;
+		}
+	}
+	
+	
+	public long GetUserQueuePosition(String athleteid){
+		long results = 0;
+				
+		try
+		{		
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+    	
+        // Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection athleteCollection = db.getCollection("athletes");
+        System.out.println("Collection athletes selected successfully");
+		                
+        BasicDBObject x = (BasicDBObject) athleteCollection.findAndModify(new BasicDBObject().append("_id", athleteid), new BasicDBObject().append("$inc", new BasicDBObject().append("nextqueue", 1)));
+		
+        results = x.getLong("nextqueue");
+
+        mongoClient.close();
+
+		return results;
+		}
+		catch(Exception ex)
+		{
+            System.out.println("Exception: " + ex.toString()); 
+			return -1;
+		}	
+	}
+	
+	public Boolean CurrentQueue(long userposition,String athleteid){		
+		try
+		{		
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+    	
+        // Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection athleteCollection = db.getCollection("athletes");
+        System.out.println("Collection athletes selected successfully");
+		                
+        BasicDBObject x = (BasicDBObject) athleteCollection.findOne(new BasicDBObject().append("_id", athleteid));
+		
+        if(userposition == x.getLong("currentqueue")){
+            mongoClient.close();
+        	return true;
+        }
+        else{
+            mongoClient.close();
+        	return false;
+        }
+        
+		}
+		catch(Exception ex)
+		{
+            System.out.println("Exception: " + ex.toString()); 
+			return false;
+		}	
+	}
+	
+	
+	@SuppressWarnings("deprecation")
+	public List<BasicDBObject> GetOrders()
+	{
+        int i = 1;
+		try
+		{
+		List<BasicDBObject> ordersList = new ArrayList<>();
+		
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+    	
+        // Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection ordersCollection = db.getCollection("orders");
+        System.out.println("Collection athletes selected successfully");
+		
+    	BasicDBObject queryFindOrders = new BasicDBObject();
+    	queryFindOrders.append("recordstatus", new BasicDBObject("$ne", 3));
+    	queryFindOrders.append("recordstatus", new BasicDBObject("$ne", 4));
+        
+        DBCursor cursor = ordersCollection.find(queryFindOrders);
+			
+        while (cursor.hasNext()) { 
+           BasicDBObject order = (BasicDBObject) cursor.next();
+           ordersList.add(order); 
+           i++;
+        }
+        System.out.println("Received "+ i + " athletes"); 
+
+        mongoClient.close();
+
+		return ordersList;
 		}
 		catch(Exception ex)
 		{

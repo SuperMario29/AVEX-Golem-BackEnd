@@ -1,7 +1,9 @@
 package avex.models;
 import java.util.List;
 
-public class Athlete {
+import com.mongodb.BasicDBObject;
+
+public class Athlete extends BasicDBObject  {
 
 	private String name,position,sport,imageUrl;
 	private int numberOfShares;

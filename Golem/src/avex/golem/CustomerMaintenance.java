@@ -1,71 +1,51 @@
 package avex.golem;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import avex.models.*;
+import com.stripe.model.Customer;
+import com.stripe.model.CustomerCollection;
 
 public class CustomerMaintenance {
 	
-	public void CustomerUpKeep(Date orderDate)
+	public void CustomerUpKeep()
 	{
-		AVEXDB avexDB = new AVEXDB();
-		List<Customer> customerList = new ArrayList<>();
-		customerList = avexDB.GetCustomer(null);
+		PaymentsApi paymentsAPI = new PaymentsApi();
+		CustomerCollection customerList = paymentsAPI.GetListofCustomers();
+		 
+		for(Customer customer:customerList.autoPagingIterable())
+		{
+			GetDeliquencies(customer);
+			SendStatements(customer);
+			SendNewCustomerEmails(customer);
+			SendWithdrawalRequest(customer);
+			ProcessTransferRequest(customer);
+		}
+	}
+	
+	private void GetDeliquencies(Customer customer)
+	{
+		if(customer.getDelinquent()){
+			
+		}
+	}
+	
+	private void SendStatements(Customer customer)
+	{
 		
-		for(Customer customer:customerList)
-		{
-			customer = GetDeliquencies(customer);
-			customer = SendStatements(customer);
-			customer = SendNewCustomerEmails(customer,orderDate);
-			customer = SendWithdrawalRequest(customer);
-			customer = ProcessTransferRequest(customer);
-		}
-	}
-	
-	private Customer GetDeliquencies(Customer customer)
-	{
-		if(customer.getRecordStatus() == 4)
-		{
-			
-			
-		}
-		return customer;
-	}
-	
-	private Customer SendStatements(Customer customer)
-	{
-		return customer;
 		
 	}
 	
-	private Customer SendNewCustomerEmails(Customer customer,Date orderDate)
+	private void SendNewCustomerEmails(Customer customer)
 	{
-	   if (customer.getRecordStatus() == 1)
-		{
-		
-		   
-		   
-		}
-	   return customer;
+
+
 	}
 	
-	private Customer SendWithdrawalRequest(Customer customer)
+	private void SendWithdrawalRequest(Customer customer)
 	{
-		if (customer.getRecordStatus() == 2)
-		{
-			
-		}		
-		return customer;
+	
 	}
 	
-	private Customer ProcessTransferRequest(Customer customer)
+	private void ProcessTransferRequest(Customer customer)
 	{
-		if (customer.getRecordStatus() == 3)
-		{
-			
-		}
-		return customer;
+
 	}
 }

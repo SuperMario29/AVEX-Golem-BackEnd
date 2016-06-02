@@ -1,6 +1,8 @@
 package avex.models;
 
-public class Customer {
+import com.mongodb.BasicDBObject;
+
+public class Customer extends BasicDBObject  {
 
 	private long customerID;
 	private String recordStatusDate,name,password,emailAddress,address1,address2,phone,country,zipCode;
