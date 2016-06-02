@@ -68,7 +68,8 @@ public class AthleteMaintenance {
 			}
 			}
 			catch(Exception ex){
-	            System.out.println(ex.getMessage());
+				System.out.println("Exception: " + ex.getMessage());
+				System.out.println("Stack Trace: " + ex.getStackTrace());
 			}
 		}
 		
@@ -80,7 +81,8 @@ public class AthleteMaintenance {
 	}
 	
 	private BasicDBObject GetAthleteValue(BasicDBList athleteStats)
-	{		
+	{	try
+	{
 		List<AthleteValue> valueList = new ArrayList<AthleteValue>();
 		double value = 0.00;
 		double price = 0.00;
@@ -129,19 +131,32 @@ public class AthleteMaintenance {
    			BasicDBObject athleteValueRating = new BasicDBObject();
    			athleteValueRating.append("athletevalue", Math.floor((value / valueList.size()) * 100) / 100);
    			athleteValueRating.append("currentprice", Math.floor((price / valueList.size()) * 100) / 100);
-   			athleteValueRating.append("recordstatusdate", date);           
-		return athleteValueRating;
+   			athleteValueRating.append("recordstatusdate", date);   
+   			return athleteValueRating;
+	}
+	catch(Exception ex){
+		System.out.println("Exception: " + ex.getMessage());
+		System.out.println("Stack Trace: " + ex.getStackTrace());
+		return null;
+	}
 	}
 	
 	private AthleteValue CalculateValue(NBAAdvancedStats athleteStats){
-		AthleteValue value = new AthleteValue();
-		double athleteValue = 0.00;
-		double price = 0.00;
-		athleteValue = Double.valueOf(athleteStats.getPie());
-		price = Double.valueOf(athleteStats.getPie());
-		value.setAthletevalue(athleteValue);
-		value.setPrice(price);
-		return value;
+		try{
+			AthleteValue value = new AthleteValue();
+			double athleteValue = 0.00;
+			double price = 0.00;
+			athleteValue = Double.valueOf(athleteStats.getPie());
+			price = Double.valueOf(athleteStats.getPie());
+			value.setAthletevalue(athleteValue);
+			value.setPrice(price);
+			return value;
+		}
+		catch (Exception ex){
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
+			return null;
+		}
 	}
 	
 		

@@ -53,11 +53,8 @@ public class Program {
 	        }
 		}
 		catch(Exception ex){
-			System.out.println("Exception: " + ex.toString());
-		}
-		
-		
-
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
+		}	
 	}
-
 }

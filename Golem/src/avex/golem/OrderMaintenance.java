@@ -48,7 +48,8 @@ public class OrderMaintenance {
 						orders.add(o);
 					}
 					catch(Exception ex){
-						System.out.println("Exception: " + ex.getLocalizedMessage());
+						System.out.println("Exception: " + ex.getMessage());
+						System.out.println("Stack Trace: " + ex.getStackTrace());
 					}
 				}
 				ProcessPendingOrders(orders);
@@ -841,7 +842,8 @@ public class OrderMaintenance {
 		}
 		}
 		catch(Exception ex){
-			System.out.println("Exception: " + ex.getLocalizedMessage());
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 	}
 }

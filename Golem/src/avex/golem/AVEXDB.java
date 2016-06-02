@@ -58,7 +58,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return null;
 		}
 	}
@@ -90,7 +91,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return null;
 		}
 	}
@@ -123,6 +125,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return false;
 		}
 	}
@@ -156,6 +160,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return false;
 		}
 	}
@@ -184,7 +190,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 		
 		
@@ -220,7 +227,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return false;
 		}
 	}
@@ -249,7 +257,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 		
 		return results;
@@ -283,7 +292,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 		
 		
@@ -343,7 +353,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return null;
 		}
 	}
@@ -378,7 +389,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return -1;
 		}	
 	}
@@ -414,7 +426,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return false;
 		}	
 	}
@@ -460,7 +473,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 			return null;
 		}
 	}
@@ -502,7 +516,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 	}
 	
@@ -554,7 +569,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 	}
 	
@@ -598,7 +614,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 	}
 	
@@ -644,7 +661,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 	}
 		
@@ -703,7 +721,8 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-		    System.out.println(ex.getLocalizedMessage());
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 	}
 			
