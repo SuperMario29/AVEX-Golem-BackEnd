@@ -16,15 +16,15 @@ public class MainController {
 	public void GetArguments(String[] arguments)
 	{
 		for (int i = 0; i < arguments.length; i++) {
-		    if (arguments[i].toLowerCase() == "/customermaint")
+		    if (arguments[i].toLowerCase().contains("customermaint"))
 		    {
 		    	setCustomerMaint(true);
 		    }
-		    else if (arguments[i].toLowerCase() == "/ordermaint")
+		    else if (arguments[i].toLowerCase().contains("ordermaint"))
 		    {
 		    	setOrderMaint(true);
 		    }
-		    else if (arguments[i].toLowerCase() == "/athletemaint")
+		    else if (arguments[i].toLowerCase().contains("athletemaint"))
 		    {
 		    	setAthleteMaint(true);
 		    }
