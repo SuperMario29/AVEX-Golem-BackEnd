@@ -56,7 +56,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return null;
 		}
 	}
@@ -88,7 +88,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return null;
 		}
 	}
@@ -181,7 +181,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 		}
 		
 		
@@ -216,7 +216,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return false;
 		}
 	}
@@ -235,7 +235,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection settingsCollect = db.getCollection("settings");
-        System.out.println("Collection athletes selected successfully");
+        System.out.println("Collection settings selected successfully");
 		
     	results = (BasicDBObject) settingsCollect.findOne();
     	 	
@@ -245,7 +245,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 		}
 		
 		return results;
@@ -278,7 +278,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 		}
 		
 		
@@ -318,7 +318,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection ordersCollection = db.getCollection("orders");
-        System.out.println("Collection athletes selected successfully");
+        System.out.println("Collection orders selected successfully");
         		
         DBCursor cursor = ordersCollection.find(andQuery).sort(new BasicDBObject().append("recordstatusdate", -1));
 			
@@ -336,7 +336,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return null;
 		}
 	}
@@ -370,7 +370,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return -1;
 		}	
 	}
@@ -405,7 +405,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return false;
 		}	
 	}
@@ -429,7 +429,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection ordersCollection = db.getCollection("orders");
-        System.out.println("Collection athletes selected successfully");
+        System.out.println("Collection orders selected successfully");
 		
     	BasicDBObject queryFindOrders = new BasicDBObject();
     	queryFindOrders.append("recordstatus", new BasicDBObject("$ne", 3));
@@ -442,7 +442,7 @@ public class AVEXDB {
            ordersList.add(order); 
            i++;
         }
-        System.out.println("Received "+ i + " athletes"); 
+        System.out.println("Received "+ i + " orders"); 
 
         mongoClient.close();
 
@@ -451,7 +451,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return null;
 		}
 	}
@@ -471,7 +471,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection athleteCollect = db.getCollection("athletes");
-        System.out.println("Collection mycol selected successfully");
+        System.out.println("Collection athletes selected successfully");
 		
         Iterator it = athletes.entrySet().iterator();
         while (it.hasNext()) {
@@ -493,7 +493,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 		}
 	}
 	
@@ -544,7 +544,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 		}
 	}
 	
@@ -563,14 +563,11 @@ public class AVEXDB {
 			
         DBCollection athleteCollect = db.getCollection("athletes");
         System.out.println("Collection athletes selected successfully");
-        
-        DBCollection collect = db.getCollection("athletes");
-        System.out.println("Collection teams selected successfully");
-		
+       
     	BasicDBObject queryFindAthlete = new BasicDBObject();
     	queryFindAthlete.append("athleteid", athleteID);
         
-    	BasicDBObject athleteObject = (BasicDBObject) collect.findOne(queryFindAthlete);
+    	BasicDBObject athleteObject = (BasicDBObject) athleteCollect.findOne(queryFindAthlete);
     	
     	if (athleteObject != null)
     	{
@@ -591,7 +588,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 		}
 	}
 	
@@ -636,7 +633,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 		}
 	}
 		
@@ -695,7 +692,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-		    System.out.println(ex.toString());
+		    System.out.println(ex.getLocalizedMessage());
 		}
 	}
 	
@@ -716,7 +713,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection coll = db.getCollection("customers");
-        System.out.println("Collection mycol selected successfully");
+        System.out.println("Collection customers selected successfully");
 			
         DBCursor cursor = coll.find();
         int i = 1;
@@ -736,7 +733,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return null;
 		}
 	}
@@ -759,7 +756,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection coll = db.getCollection("orders");
-        System.out.println("Collection mycol selected successfully");
+        System.out.println("Collection orders selected successfully");
 			
         DBCursor cursor = coll.find();
         int i = 1;
@@ -779,7 +776,7 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-            System.out.println("Exception: " + ex.toString()); 
+            System.out.println("Exception: " + ex.getLocalizedMessage()); 
 			return null;
 		}
 	}

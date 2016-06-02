@@ -23,28 +23,43 @@ public class OrderMaintenance {
 	private PaymentsApi paymentsapi = new PaymentsApi();
 
 	public void OrderUpKeep() {
-
-		List<BasicDBObject> orderList = avexDB.GetOrders();
-		if (orderList != null && orderList.size() > 0) {
-			List<Order> orders = new ArrayList<>();
-			for (BasicDBObject order : orderList) {
-				Order o = new Order();
-				o.setAthleteID(order.getString("athleteid"));
-				o.setCustomerID(order.getString("customerid"));
-				o.setPrice(order.getDouble("price"));
-				o.setQuantity(order.getInt("quantity"));
-				o.setActiontype(order.getString("actiontype"));
-				o.setRecordStatus(order.getInt("recordstatus"));
-				o.setRecordstatusdate(order.getDate("recordstatusdate"));
-				o.setIspending(order.getBoolean("ispending"));
-				orders.add(o);
+		try{
+			List<BasicDBObject> orderList = avexDB.GetOrders();
+			if (orderList != null && orderList.size() > 0) {
+				List<Order> orders = new ArrayList<>();
+				for (BasicDBObject order : orderList) {
+					try{
+						Order o = new Order();
+						o.setAthleteID(order.getString("athleteid"));
+						o.setCustomerID(order.getString("customerid"));
+						o.setPrice(order.getDouble("price"));
+						o.setQuantity(order.getInt("quantity"));
+						o.setActiontype(order.getString("actiontype"));
+						o.setRecordStatus(order.getInt("recordstatus"));
+						o.setRecordstatusdate(order.getDate("recordstatusdate"));
+						if(order.get("ispending") != null && order.getBoolean("ispending")  == true){
+							o.setIspending(true);
+						}
+						else{
+							o.setIspending(false);
+						}
+						orders.add(o);
+					}
+					catch(Exception ex){
+						
+					}
+				}
+				ProcessPendingOrders(orders);
 			}
-			ProcessPendingOrders(orders);
+		}
+		catch(Exception ex){
+			System.out.println("Exception: " + ex.getLocalizedMessage());
 		}
 	}
 
 	@SuppressWarnings("unused")
 	private void ProcessPendingOrders(List<Order> orderList) {
+		try{
 		Collections.sort(orderList);
 		for (Order order : orderList) {
 			if (order.getIspending()) {
@@ -816,6 +831,10 @@ public class OrderMaintenance {
 					System.out.println("User was not found");
 				}
 			}
+		}
+		}
+		catch(Exception ex){
+			System.out.println("Exception: " + ex.getLocalizedMessage());
 		}
 	}
 }
