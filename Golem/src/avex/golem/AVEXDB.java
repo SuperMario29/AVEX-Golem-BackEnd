@@ -67,7 +67,8 @@ public class AVEXDB {
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		
 		try
-		{		    	
+		{		
+	     System.out.println("Get User: " + customerid);	
         // Now connect to your databases
 		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
@@ -80,7 +81,6 @@ public class AVEXDB {
 		        
         results = (BasicDBObject) customerCollection.findOne(new BasicDBObject().append("_id", customerid));
 			
-
         mongoClient.close();
 
 		return results;
@@ -158,11 +158,12 @@ public class AVEXDB {
 		}
 	}
 	
-	public void CompleteAthleteQueue(String athleteid){
+	public void CompleteAthleteQueue(String athleteID){
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
-		{		
+		{	
+		System.out.println("Get Athlete Queue: " + athleteID);		
         // Now connect to your databases
 		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
@@ -173,7 +174,7 @@ public class AVEXDB {
         DBCollection athleteCollection = db.getCollection("athletes");
         System.out.println("Collection athletes selected successfully");
 		                
-        athleteCollection.update(new BasicDBObject().append("_id", athleteid), new BasicDBObject().append("$inc", new BasicDBObject().append("currentqueue", 1)));
+        athleteCollection.update(new BasicDBObject().append("_id", athleteID), new BasicDBObject().append("$inc", new BasicDBObject().append("currentqueue", 1)));
 	
         mongoClient.close();
 
@@ -191,9 +192,10 @@ public class AVEXDB {
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
-		{	    	
-	        // Now connect to your databases
-			DB db = mongoClient.getDB(Program.DATABASE_NAME);
+		{
+		     System.out.println("Save Athlete Data: " + athlete);
+		// Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
 			
         //boolean auth = db.authenticate(myUserName, myPassword);
@@ -257,6 +259,7 @@ public class AVEXDB {
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
 		{
+		System.out.println("Get Athlete By ID: " + athleteID);	
 	        // Now connect to your databases
 		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
@@ -268,7 +271,7 @@ public class AVEXDB {
         System.out.println("Collection athletes selected successfully");
 		
     	BasicDBObject queryFindAthlete = new BasicDBObject();
-    	queryFindAthlete.append("athleteid", athleteID);
+    	queryFindAthlete.append("_id", athleteID);
         
     	results = (BasicDBObject) athleteCollect.findOne(queryFindAthlete);
     	 
@@ -300,10 +303,12 @@ public class AVEXDB {
 			//ActionType 1 equals Buy Order
 			if(actiontype == 1){
 				obj.add(new BasicDBObject().append("actiontype", "sell"));
+			     System.out.println("Get Sell Orders for AthleteID: " + athleteID);	
 			}
 			//ActionType 2 equals Sell Order
 			else if(actiontype == 2){
-				obj.add(new BasicDBObject().append("actiontype", "buy"));	
+				obj.add(new BasicDBObject().append("actiontype", "buy"));
+				 System.out.println("Get Buy Orders for AthleteID: " + athleteID);	
 			}
 			
 			BasicDBObject andQuery = new BasicDBObject();
@@ -342,13 +347,14 @@ public class AVEXDB {
 	}
 	
 	
-	public long GetUserQueuePosition(String athleteid){
+	public long GetUserQueuePosition(String athleteID){
 		long results = 0;
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );		
 		
 		try
-		{		    	
+		{
+	    System.out.println("Get Customer Queue Position for AthleteID: " + athleteID);	
         // Now connect to your databases
 		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
@@ -359,7 +365,7 @@ public class AVEXDB {
         DBCollection athleteCollection = db.getCollection("athletes");
         System.out.println("Collection athletes selected successfully");
 		                
-        BasicDBObject x = (BasicDBObject) athleteCollection.findAndModify(new BasicDBObject().append("_id", athleteid), new BasicDBObject().append("$inc", new BasicDBObject().append("nextqueue", 1)));
+        BasicDBObject x = (BasicDBObject) athleteCollection.findAndModify(new BasicDBObject().append("_id", athleteID), new BasicDBObject().append("$inc", new BasicDBObject().append("nextqueue", 1)));
 		
         results = x.getLong("nextqueue");
 
@@ -375,11 +381,12 @@ public class AVEXDB {
 		}	
 	}
 	
-	public Boolean CurrentQueue(long userposition,String athleteid){		
+	public Boolean CurrentQueue(long userposition,String athleteID){		
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
-		{		    	
+		{
+		System.out.println("Get Current Queue Position for AthleteID: " + athleteID);	
         // Now connect to your databases
 		DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
@@ -390,7 +397,7 @@ public class AVEXDB {
         DBCollection athleteCollection = db.getCollection("athletes");
         System.out.println("Collection athletes selected successfully");
 		                
-        BasicDBObject x = (BasicDBObject) athleteCollection.findOne(new BasicDBObject().append("_id", athleteid));
+        BasicDBObject x = (BasicDBObject) athleteCollection.findOne(new BasicDBObject().append("_id", athleteID));
 		
         if(userposition == x.getLong("currentqueue")){
             mongoClient.close();
@@ -500,6 +507,7 @@ public class AVEXDB {
 	@SuppressWarnings("deprecation")
 	public void GetAthleteQuote(int athleteID,String playerName)
 	{
+		System.out.println("Get Athlete Quote for AthleteID: " + athleteID);	
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
@@ -553,7 +561,7 @@ public class AVEXDB {
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try{
-	    	
+			System.out.println("Update Current Price for AthleteID: " + athleteID);	
 	        // Now connect to your databases
 			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
@@ -595,6 +603,7 @@ public class AVEXDB {
 	@SuppressWarnings("deprecation")
 	public void UpdateTeamByAthlete(int athleteID, int teamID)
 	{
+		System.out.println("Update Team By Athlete for AthleteID: " + athleteID);	
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
@@ -643,7 +652,7 @@ public class AVEXDB {
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
 		{
-	    	
+			System.out.println("Get Athlete IPO for AthleteID: " + athleteID);	
 	        // Now connect to your databases
 			DB db = mongoClient.getDB(Program.DATABASE_NAME);
         System.out.println("Connect to database successfully");
@@ -695,49 +704,7 @@ public class AVEXDB {
 		    System.out.println(ex.getLocalizedMessage());
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
-	public List<Customer> GetCustomer(Date orderDate)
-	{
-        // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
-		try
-		{
-			List<Customer> customerList = new ArrayList<>();
-	    	
-	        // Now connect to your databases
-			DB db = mongoClient.getDB(Program.DATABASE_NAME);
-        System.out.println("Connect to database successfully");
 			
-        //boolean auth = db.authenticate(myUserName, myPassword);
-        //System.out.println("Authentication: "+auth);         
-			
-        DBCollection coll = db.getCollection("customers");
-        System.out.println("Collection customers selected successfully");
-			
-        DBCursor cursor = coll.find();
-        int i = 1;
-			
-        while (cursor.hasNext()) { 
-           JSONParser parser = new JSONParser();
-           Customer customer = (Customer) parser.parse(cursor.toString());
-           customerList.add(customer);
-           System.out.println("Inserted Document: "+i); 
-           System.out.println(cursor.next()); 
-           i++;
-        }
-        mongoClient.close();
-		
-		return customerList;
-		}
-		catch(Exception ex)
-		{
-	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
-			return null;
-		}
-	}
-		
 	private String Shuffle(String input){
         List<Character> characters = new ArrayList<Character>();
         for(char c:input.toCharArray()){
