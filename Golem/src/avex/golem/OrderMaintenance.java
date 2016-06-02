@@ -133,7 +133,7 @@ public class OrderMaintenance {
 
 							if (order.getActiontype().toLowerCase() == "buy") {
 								if (availableshares > order.getQuantity() && accountbalance != 0.00) {
-									List<BasicDBObject> orders = avexDB.GetOrderByAthleteId(1, athleteid);
+									List<BasicDBObject> orders = avexDB.GetOrdersByAthleteId(1, athleteid);
 
 									if (orders != null && !orders.isEmpty()) {
 										int initialQuantityRequest = updateshares;
@@ -505,7 +505,7 @@ public class OrderMaintenance {
 								}
 								// THE ORDERS ARE RESELLABLE
 								else {
-									List<BasicDBObject> orders = avexDB.GetOrderByAthleteId(2, athleteid);
+									List<BasicDBObject> orders = avexDB.GetOrdersByAthleteId(2, athleteid);
 
 									if (orders != null && !order.isEmpty()) {
 

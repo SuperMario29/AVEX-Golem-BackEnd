@@ -16,6 +16,8 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.DBCursor;
+
+import org.bson.types.ObjectId;
 import org.json.simple.parser.JSONParser;
 
 public class AVEXDB {
@@ -79,7 +81,7 @@ public class AVEXDB {
         DBCollection customerCollection = db.getCollection("customers");
         System.out.println("Collection customers selected successfully");
 		        
-        results = (BasicDBObject) customerCollection.findOne(new BasicDBObject().append("_id", customerid));
+        results = (BasicDBObject) customerCollection.findOne(new BasicDBObject().append("_id", new ObjectId(customerid)));
 			
         mongoClient.close();
 
@@ -109,7 +111,7 @@ public class AVEXDB {
         System.out.println("Collection customers selected successfully");
 		
     	BasicDBObject queryFind = new BasicDBObject();
-    	queryFind.append("_id", user.getString("_id"));
+    	queryFind.append("_id", new ObjectId(user.getString("_id")));
     	
     	customersCollect.update(queryFind, user);
     	
@@ -142,7 +144,7 @@ public class AVEXDB {
 		
 
     	BasicDBObject queryFind = new BasicDBObject();
-    	queryFind.append("_id", order.getString("_id"));
+    	queryFind.append("_id", new ObjectId(order.getString("_id")));
     	
     	ordersCollect.update(queryFind, order);
     	
@@ -174,7 +176,7 @@ public class AVEXDB {
         DBCollection athleteCollection = db.getCollection("athletes");
         System.out.println("Collection athletes selected successfully");
 		                
-        athleteCollection.update(new BasicDBObject().append("_id", athleteID), new BasicDBObject().append("$inc", new BasicDBObject().append("currentqueue", 1)));
+        athleteCollection.update(new BasicDBObject().append("_id",  new ObjectId(athleteID)), new BasicDBObject().append("$inc", new BasicDBObject().append("currentqueue", 1)));
 	
         mongoClient.close();
 
@@ -206,7 +208,7 @@ public class AVEXDB {
 		
 
     	BasicDBObject queryFindAthlete = new BasicDBObject();
-    	queryFindAthlete.append("_id", athlete.getString("_id"));
+    	queryFindAthlete.append("_id",  new ObjectId(athlete.getString("_id")));
     	
     	athleteCollect.update(queryFindAthlete, athlete);
     	
@@ -271,7 +273,7 @@ public class AVEXDB {
         System.out.println("Collection athletes selected successfully");
 		
     	BasicDBObject queryFindAthlete = new BasicDBObject();
-    	queryFindAthlete.append("_id", athleteID);
+    	queryFindAthlete.append("_id",  new ObjectId(athleteID));
         
     	results = (BasicDBObject) athleteCollect.findOne(queryFindAthlete);
     	 
@@ -288,7 +290,7 @@ public class AVEXDB {
 		return results;		
 	}
 	
-	public List<BasicDBObject> GetOrderByAthleteId(int actiontype, String athleteID){
+	public List<BasicDBObject> GetOrdersByAthleteId(int actiontype, String athleteID){
 		List<BasicDBObject> results = new ArrayList<>();
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
@@ -365,7 +367,7 @@ public class AVEXDB {
         DBCollection athleteCollection = db.getCollection("athletes");
         System.out.println("Collection athletes selected successfully");
 		                
-        BasicDBObject x = (BasicDBObject) athleteCollection.findAndModify(new BasicDBObject().append("_id", athleteID), new BasicDBObject().append("$inc", new BasicDBObject().append("nextqueue", 1)));
+        BasicDBObject x = (BasicDBObject) athleteCollection.findAndModify(new BasicDBObject().append("_id",  new ObjectId(athleteID)), new BasicDBObject().append("$inc", new BasicDBObject().append("nextqueue", 1)));
 		
         results = x.getLong("nextqueue");
 
@@ -397,7 +399,7 @@ public class AVEXDB {
         DBCollection athleteCollection = db.getCollection("athletes");
         System.out.println("Collection athletes selected successfully");
 		                
-        BasicDBObject x = (BasicDBObject) athleteCollection.findOne(new BasicDBObject().append("_id", athleteID));
+        BasicDBObject x = (BasicDBObject) athleteCollection.findOne(new BasicDBObject().append("_id",  new ObjectId(athleteID)));
 		
         if(userposition == x.getLong("currentqueue")){
             mongoClient.close();

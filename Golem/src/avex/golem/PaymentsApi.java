@@ -51,8 +51,6 @@ public class PaymentsApi {
 	public Customer GetCustomerBalance(String stripeaccount){
 		Stripe.apiKey = STRIPE_API_KEY;
 try{
-		//Map<String, Object> customerParams = new HashMap<String, Object>();
-		//customerParams.put("limit", 3);
 		Customer customer = Customer.retrieve(stripeaccount);
 		return customer;
 	} catch (AuthenticationException e) {
@@ -79,12 +77,34 @@ try{
 	}
 
 public boolean UpdateCustomerBalance(String stripeaccount,int accountbalance){
-
-	boolean results = false;
-	
-	
-	return results;
-	
+	Stripe.apiKey = STRIPE_API_KEY;
+try{
+	Customer cu = Customer.retrieve(stripeaccount);
+	Map<String, Object> updateParams = new HashMap<String, Object>();
+	updateParams.put("account_balance", accountbalance);
+	cu.update(updateParams);
+	return true;
+} catch (AuthenticationException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+	return false;
+} catch (InvalidRequestException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+	return false;
+} catch (APIConnectionException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+	return false;
+} catch (CardException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+	return false;
+} catch (APIException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+	return false;
+}	
 	
 }
 
