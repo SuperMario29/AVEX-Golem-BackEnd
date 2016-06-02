@@ -64,6 +64,8 @@ public class OrderMaintenance {
 		for (Order order : orderList) {
 			if (order.getIspending()) {
 
+				System.out.println("Order Object: " + order);
+				
 				double finalcommission = 0.00;
 				double finalprice = 0.00;
 				int availableshares = 0;
@@ -81,8 +83,11 @@ public class OrderMaintenance {
 
 				BasicDBObject existingposition = new BasicDBObject();
 				BasicDBObject customer = avexDB.GetUser(order.getCustomerID());
+				System.out.println("Customer Object: " + customer);
 				BasicDBObject settings = avexDB.GetSettings();
+				System.out.println("Settings Object: " + settings);
 				BasicDBObject athlete = avexDB.GetAthleteByID(order.getAthleteID());
+				System.out.println("Athlete Object: " + athlete);
 				BasicDBObject customerHistory = new BasicDBObject();
 
 				if (customer != null && !customer.isEmpty() && settings != null && !settings.isEmpty()

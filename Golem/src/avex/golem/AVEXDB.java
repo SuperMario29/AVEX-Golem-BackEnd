@@ -76,7 +76,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection customerCollection = db.getCollection("customers");
-        System.out.println("Collection athletes selected successfully");
+        System.out.println("Collection customers selected successfully");
 		        
         results = (BasicDBObject) customerCollection.findOne(new BasicDBObject().append("_id", customerid));
 			
@@ -106,7 +106,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection customersCollect = db.getCollection("customers");
-        System.out.println("Collection athletes selected successfully");
+        System.out.println("Collection customers selected successfully");
 		
     	BasicDBObject queryFind = new BasicDBObject();
     	queryFind.append("_id", user.getString("_id"));
@@ -138,7 +138,7 @@ public class AVEXDB {
         //System.out.println("Authentication: "+auth);         
 			
         DBCollection ordersCollect = db.getCollection("orders");
-        System.out.println("Collection athletes selected successfully");
+        System.out.println("Collection orders selected successfully");
 		
 
     	BasicDBObject queryFind = new BasicDBObject();
@@ -737,50 +737,7 @@ public class AVEXDB {
 			return null;
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
-	public List<Order> GetOrders(Date orderDate)
-	{
-        // To connect to mongodb server
-        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
-		try
-		{
 		
-		List<Order> orderList = new ArrayList<>();
-    	
-        // Now connect to your databases
-		DB db = mongoClient.getDB(Program.DATABASE_NAME);
-        System.out.println("Connect to database successfully");
-			
-        //boolean auth = db.authenticate(myUserName, myPassword);
-        //System.out.println("Authentication: "+auth);         
-			
-        DBCollection coll = db.getCollection("orders");
-        System.out.println("Collection orders selected successfully");
-			
-        DBCursor cursor = coll.find();
-        int i = 1;
-			
-        while (cursor.hasNext()) { 
-            JSONParser parser = new JSONParser();
-            Order order = (Order) parser.parse(cursor.toString());
-            orderList.add(order);
-           System.out.println("Inserted Document: "+i); 
-           System.out.println(cursor.next()); 
-           i++;
-        }
-        mongoClient.close();
-		
-		return orderList;
-		}
-		catch(Exception ex)
-		{
-	        mongoClient.close();
-            System.out.println("Exception: " + ex.getLocalizedMessage()); 
-			return null;
-		}
-	}
-	
 	private String Shuffle(String input){
         List<Character> characters = new ArrayList<Character>();
         for(char c:input.toCharArray()){
