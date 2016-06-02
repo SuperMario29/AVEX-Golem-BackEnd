@@ -29,6 +29,7 @@ public class OrderMaintenance {
 				List<Order> orders = new ArrayList<>();
 				for (BasicDBObject order : orderList) {
 					try{
+						System.out.println("Received Order : " + order);
 						Order o = new Order();
 						o.setAthleteID(order.getString("athleteid"));
 						o.setCustomerID(order.getString("customerid"));
@@ -43,10 +44,11 @@ public class OrderMaintenance {
 						else{
 							o.setIspending(false);
 						}
+						System.out.println("Added Order To List: " + o);
 						orders.add(o);
 					}
 					catch(Exception ex){
-						
+						System.out.println("Exception: " + ex.getLocalizedMessage());
 					}
 				}
 				ProcessPendingOrders(orders);
