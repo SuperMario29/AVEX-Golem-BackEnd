@@ -1,4 +1,8 @@
 package avex.golem;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +15,9 @@ import avex.athletedata.AthleteDataApi;
 import avex.models.*;
 
 public class AthleteMaintenance {
+	
+	HashMap<String,HashMap<String,AthleteWINS>> athleteDictionary = new HashMap<String,HashMap<String,AthleteWINS>>();
+	HashMap<Integer,String> athleteImages;
 
 	public void AthleticUpKeep()
 	{
@@ -18,7 +25,10 @@ public class AthleteMaintenance {
 		AthleteDataApi athleteAPI = new AthleteDataApi();
 		Map<Integer,BasicDBObject> athleteValueMap = new HashMap<Integer,BasicDBObject>();
 		
-		List<BasicDBObject> results = avexDB.GetAthletes();
+		athleteDictionary = GetWinsFile();
+		athleteImages = GetAthleteImages();
+		
+		List<BasicDBObject> results = avexDB.GetAthletes();		
 		if (results != null)
 		{
 		for(BasicDBObject athlete:results)
@@ -26,9 +36,12 @@ public class AthleteMaintenance {
 			try
 			{
 			int athleteID =  (int) athlete.get("athleteid");
+			String ID = athlete.getString("_id");
 			String athleteName = String.valueOf(athlete.get("name"));
+			BasicDBObject athleteTeam = (BasicDBObject) athlete.get("team");
+			String athleteTeamAbb = String.valueOf(athleteTeam.get("abbreviation"));
 			String athletequote = String.valueOf(athlete.get("quote"));
-			int teamID = (int)(athlete.get("teamid"));
+			int teamID = (int)(athleteTeam.get("teamid"));
 			int orderseq = (int) athlete.get("orderseq");
 			boolean athleteIPO = false;
 			boolean isresellable = false;
@@ -47,6 +60,10 @@ public class AthleteMaintenance {
 				avexDB.GetAthleteQuote(athleteID, athleteName);
 			}
 			
+			if(athleteImages != null && athleteImages.containsKey(athleteID)){
+				avexDB.UpdateAthleteImage(ID,new BasicDBObject().append("$set", new BasicDBObject().append("imageurl", athleteImages.get(athleteID))));
+			}
+			
 			if(athleteIPO == false && recordstatus == 1)
 			{
 				avexDB.GetAthleteIPO(athleteID, athletequote,availableshares,orderseq);
@@ -54,18 +71,24 @@ public class AthleteMaintenance {
 			
 			avexDB.UpdateTeamByAthlete(athleteID, teamID);
 			
-			BasicDBList athleteStats = athleteAPI.GetNBAStatStatsDataByPlayer(athleteID,true);
+			//BasicDBList athleteStats = athleteAPI.GetNBAStatStatsDataByPlayer(athleteID,true);
 			
-			if (athleteStats != null && athleteStats.size() > 0)
-			{
-				BasicDBObject value = GetAthleteValue(athleteStats);
-				
-				if(!isresellable){
-				avexDB.UpdateCurrentPrice(athleteID, value);
+			//if (athleteStats != null && athleteStats.size() > 0)
+			//{
+				//BasicDBObject value = GetAthleteValue(athleteStats);
+				BasicDBObject value = GetWinsValue(athleteName,athleteTeamAbb);			
+			
+				if(!isresellable && !value.isEmpty()){
+						avexDB.UpdateCurrentPrice(athleteID, value);
 				}
 				
+				if(!value.isEmpty()){
 				athleteValueMap.put(athleteID, value);
-			}
+				}
+				else{
+					avexDB.AthleteUnavailable(athleteID);
+				}
+			//}
 			}
 			catch(Exception ex){
 				System.out.println("Exception: " + ex.getMessage());
@@ -140,6 +163,21 @@ public class AthleteMaintenance {
 		return null;
 	}
 	}
+
+	private BasicDBObject GetWinsValue(String athleteName, String teamNameAbb){
+		BasicDBObject athleteValueRating = new BasicDBObject();
+			if(athleteDictionary.containsKey(athleteName))
+			{
+				if(athleteDictionary.get(athleteName).containsKey(teamNameAbb))
+				{
+					AthleteWINS wins = athleteDictionary.get(athleteName).get(teamNameAbb);
+					athleteValueRating.append("athletevalue", wins.getWins());
+					athleteValueRating.append("currentprice", wins.getWins());
+					athleteValueRating.append("recordstatusdate", new Date());   
+				}
+			}
+		return athleteValueRating;
+	}
 	
 	private AthleteValue CalculateValue(NBAAdvancedStats athleteStats){
 		try{
@@ -158,7 +196,6 @@ public class AthleteMaintenance {
 			return null;
 		}
 	}
-	
 		
 	private NBAAdvancedStats BuildNBAStatsObject(BasicDBObject as)
 	{
@@ -176,4 +213,170 @@ public class AthleteMaintenance {
 		
 	}
 	
+	private HashMap<String,HashMap<String,AthleteWINS>> GetWinsFile(){
+		HashMap<String,HashMap<String,AthleteWINS>> results = new HashMap<String,HashMap<String,AthleteWINS>>();
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+		
+        try {
+			br = new BufferedReader(new FileReader(Program.WINS_FILE_PATH));
+	        while ((line = br.readLine()) != null) {
+	            // use comma as separator
+	            String[] athleteInfo = line.split(cvsSplitBy);
+	            String athleteName = athleteInfo[1];
+	            if(athleteName != null) {athleteName = athleteName.trim();}
+	            String teamName = athleteInfo[4];
+	            if(teamName != null) {teamName = teamName.trim();}
+	            String WINS = athleteInfo[22];
+	            if(WINS != null) {WINS = WINS.trim();}
+	            String wins48 = athleteInfo[23];
+	            if(wins48 != null) {wins48 = wins48.trim();}
+            	AthleteWINS w = new AthleteWINS();
+            	w.setWins(WINS);
+            	w.setWins48(wins48);
+	            
+	            if (results.containsKey(athleteName))
+	            {
+	            	if(!results.get(athleteName).containsKey(teamName)){
+	            		results.get(athleteName).put(teamName, w);
+	            	}
+	            }
+	            else{
+	            	HashMap<String,AthleteWINS> ats = new HashMap<String,AthleteWINS>();
+	            	ats.put(teamName, w);
+	            	results.put(athleteName, ats);
+	            }
+	        }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new HashMap<String,HashMap<String,AthleteWINS>>();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new HashMap<String,HashMap<String,AthleteWINS>>();
+		}
+        finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return results;
+	}
+	
+	private AthleteWINSDictionary GetWinsFileOLD(){
+		AthleteWINSDictionary results = new AthleteWINSDictionary();
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+		
+        try {
+			br = new BufferedReader(new FileReader(Program.WINS_FILE_PATH));
+	        while ((line = br.readLine()) != null) {
+	            // use comma as separator
+	            String[] athleteInfo = line.split(cvsSplitBy);
+	            String athleteName = athleteInfo[1];
+	            if(athleteName != null) {athleteName = athleteName.trim();}
+	            String teamName = athleteInfo[4];
+	            if(teamName != null) {teamName = teamName.trim();}
+	            String WINS = athleteInfo[22];
+	            if(WINS != null) {WINS = WINS.trim();}
+	            String wins48 = athleteInfo[23];
+	            if(wins48 != null) {wins48 = wins48.trim();}
+            	AthleteWINS w = new AthleteWINS();
+            	w.setWins(WINS);
+            	w.setWins48(wins48);
+	            
+	            if (results.getAthleteWINSDictionary().containsKey(athleteName))
+	            {
+	            	if(!results.getAthleteWINSDictionary().get(athleteName).AthleteWINSTeamStatsDictionary().containsKey(teamName)){
+	            		results.getAthleteWINSDictionary().get(athleteName).AthleteWINSTeamStatsDictionary().put(teamName, w);
+	            	}
+	            }
+	            else{
+	            	AthleteWINTeamStats ats = new AthleteWINTeamStats();
+	            	ats.AthleteWINSTeamStatsDictionary().put(teamName, w);
+	            	results.getAthleteWINSDictionary().put(athleteName, ats);
+	            }
+	        }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new AthleteWINSDictionary();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new AthleteWINSDictionary();
+		}
+        finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return results;
+	}
+
+	private HashMap<Integer,String> GetAthleteImages(){
+	
+		HashMap<Integer,String> results = new HashMap<Integer,String>();
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+		
+        try {
+			br = new BufferedReader(new FileReader(Program.IMAGE_FILE_PATH));
+	        while ((line = br.readLine()) != null) {
+	            // use comma as separator
+	            String[] athleteInfo = line.split(cvsSplitBy);
+	            String athleteid = athleteInfo[0];
+	            if(athleteid != null && tryParseInt(athleteid)) {athleteid = athleteid.trim();}
+	            else{continue;}
+	            String athleteName = athleteInfo[1];
+	            String imageurl = athleteInfo[2];
+	            if(imageurl != null) {imageurl = imageurl.trim();}
+	            
+	            if (!results.containsKey(Integer.parseInt(athleteid)))
+	            {
+	            	results.put(Integer.parseInt(athleteid), imageurl);
+	            }
+	        }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new HashMap<Integer,String>();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new HashMap<Integer,String>();
+		}
+        finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+		
+		return results;		
+	}
+	
+	private boolean tryParseInt(String value) {  
+	     try {  
+	         Integer.parseInt(value);  
+	         return true;  
+	      } catch (NumberFormatException e) {  
+	         return false;  
+	      }  
+	}
 }

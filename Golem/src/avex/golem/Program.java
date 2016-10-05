@@ -11,6 +11,8 @@ public class Program {
 	public static int DATABASE_PORT = 0;
 	public static String EMAIL_HOST = "";
 	public static String EMAIL_COMPANY = "";
+	public static String WINS_FILE_PATH = "";
+	public static String IMAGE_FILE_PATH = "";
 	
 	public static void main(String[] args) {
 		
@@ -33,6 +35,8 @@ public class Program {
 	        DATABASE_PORT = Integer.valueOf(prop.getProperty("databaseport"));
 	        EMAIL_HOST = prop.getProperty("emailhost");
 	        EMAIL_COMPANY = prop.getProperty("emailcompany");
+	        WINS_FILE_PATH = prop.getProperty("winsfilepath");
+	        IMAGE_FILE_PATH = prop.getProperty("athleteimages");
 		
 	        MainController mainController = new MainController();
 	        mainController.GetArguments(args);

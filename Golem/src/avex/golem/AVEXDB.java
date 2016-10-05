@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mongodb.MongoClient;
+import com.stripe.model.CustomerCollection;
 
 import avex.models.Customer;
 import avex.models.Order;
@@ -52,6 +53,8 @@ public class AVEXDB {
         System.out.println("Received "+ i + " athletes"); 
 
         mongoClient.close();
+        
+        System.out.println("Got Athlete List Successfully");
 
 		return athleteList;
 		}
@@ -85,6 +88,8 @@ public class AVEXDB {
         results = (BasicDBObject) customerCollection.findOne(new BasicDBObject().append("_id", new ObjectId(customerid)));
 			
         mongoClient.close();
+        
+        System.out.println("Got Customer Information Successfully");
 
 		return results;
 		}
@@ -97,7 +102,7 @@ public class AVEXDB {
 		}
 	}
 	
-	public boolean SaveUser(BasicDBObject user){
+	public boolean SaveUser(BasicDBObject user,BasicDBObject updatePosition, BasicDBObject transactionHistory){
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
@@ -115,9 +120,11 @@ public class AVEXDB {
     	BasicDBObject queryFind = new BasicDBObject();
     	queryFind.append("_id", new ObjectId(user.getString("_id")));
     	
-    	customersCollect.update(queryFind, user);
-    	
+    	if(!updatePosition.isEmpty()){    	customersCollect.update(queryFind, updatePosition);	}
+    	if(!transactionHistory.isEmpty()){    	customersCollect.update(queryFind, transactionHistory);	}    	
         mongoClient.close();
+        
+        System.out.println("Saved Customer Successfully");
 		
         return true;
         
@@ -131,7 +138,7 @@ public class AVEXDB {
 		}
 	}
 	
-	public boolean SaveOrder(Order order){
+	public boolean UpdateOrder(String orderid,BasicDBObject updateOrder){
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
@@ -148,11 +155,49 @@ public class AVEXDB {
 		
 
     	BasicDBObject queryFind = new BasicDBObject();
-    	queryFind.append("_id", new ObjectId(order.getString("_id")));
+    	queryFind.append("_id", new ObjectId(orderid));
     	
-    	ordersCollect.update(queryFind, order);
+    	if(!updateOrder.isEmpty()){    
+    		BasicDBObject order = new BasicDBObject();
+    		order.append("$set", updateOrder);
+    		ordersCollect.update(queryFind, order);	}
+    	
+        System.out.println("Saved Order Successfully");
     	
         mongoClient.close();
+		
+        return true;
+        
+		}
+		catch(Exception ex)
+		{
+	        mongoClient.close();
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
+			return false;
+		}
+	}
+		
+	public boolean CreateNewOrder(BasicDBObject newOrder){
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+		try
+		{	    	
+	    // Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection ordersCollect = db.getCollection("orders");
+        System.out.println("Collection orders selected successfully");
+		    	
+    	ordersCollect.insert(newOrder);
+    	
+        mongoClient.close();
+        
+        System.out.println("Created Order Successfully");
 		
         return true;
         
@@ -184,6 +229,8 @@ public class AVEXDB {
 		                
         athleteCollection.update(new BasicDBObject().append("_id",  new ObjectId(athleteID)), new BasicDBObject().append("$inc", new BasicDBObject().append("currentqueue", 1)));
 	
+        System.out.println("Update CurrentQueue successfully");
+        
         mongoClient.close();
 
 		}
@@ -197,7 +244,7 @@ public class AVEXDB {
 		
 	}
 	
-	public boolean SaveAthlete(BasicDBObject athlete){		
+	public boolean SaveAthlete(BasicDBObject athlete,BasicDBObject price, BasicDBObject shares, BasicDBObject order, BasicDBObject pricehistory){		
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
 		try
@@ -217,9 +264,14 @@ public class AVEXDB {
     	BasicDBObject queryFindAthlete = new BasicDBObject();
     	queryFindAthlete.append("_id",  new ObjectId(athlete.getString("_id")));
     	
-    	athleteCollect.update(queryFindAthlete, athlete);
+    	if(!price.isEmpty()){    	athleteCollect.update(queryFindAthlete, price);    	}
+    	if(!shares.isEmpty()){    	athleteCollect.update(queryFindAthlete, shares);    	}
+    	if(!order.isEmpty()){    	athleteCollect.update(queryFindAthlete, order);    	}
+    	if(!pricehistory.isEmpty()){	athleteCollect.update(queryFindAthlete, pricehistory);    	}
     	
         mongoClient.close();
+        
+        System.out.println("Saved Athlete successfully");
 		
         return true;
         
@@ -250,6 +302,8 @@ public class AVEXDB {
         System.out.println("Collection settings selected successfully");
 		
     	results = (BasicDBObject) settingsCollect.findOne();
+    	
+        System.out.println("Received Settings Successfully");
     	 	
         mongoClient.close();
 		
@@ -296,11 +350,12 @@ public class AVEXDB {
 			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 		
+        System.out.println("Got Athlete By Athlete ID successfully");
 		
 		return results;		
 	}
 	
-	public List<BasicDBObject> GetOrdersByAthleteId(int actiontype, String athleteID){
+	public List<BasicDBObject> GetOrdersByAthleteId(int actiontype, String athleteID,int extathleteID){
 		List<BasicDBObject> results = new ArrayList<>();
         // To connect to mongodb server
         MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
@@ -308,7 +363,14 @@ public class AVEXDB {
 		try
 		{	
 			List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
-			obj.add(new BasicDBObject().append("athleteid", athleteID));
+			List<BasicDBObject> obj1 = new ArrayList<BasicDBObject>();
+			
+			obj1.add(new BasicDBObject().append("athleteid", athleteID));
+			obj1.add(new BasicDBObject().append("extathleteid", extathleteID));
+			BasicDBObject athleteFind = new BasicDBObject();
+			athleteFind.put("$or",obj1);
+			
+			obj.add(athleteFind);
 			obj.add(new BasicDBObject().append("recordstatus", new BasicDBObject().append("$ne", 3)));
 			obj.add(new BasicDBObject().append("recordstatus", new BasicDBObject().append("$ne", 4)));
 			
@@ -344,7 +406,7 @@ public class AVEXDB {
            results.add(order); 
         }
         
-        System.out.println("Received orders"); 
+        System.out.println("Received orders by athlete successfully"); 
 
         mongoClient.close();
 
@@ -358,8 +420,7 @@ public class AVEXDB {
 			return null;
 		}
 	}
-	
-	
+		
 	public long GetUserQueuePosition(String athleteID){
 		long results = 0;
         // To connect to mongodb server
@@ -382,6 +443,8 @@ public class AVEXDB {
 		
         results = x.getLong("nextqueue");
 
+		System.out.println("CUSTOMER POSITION: " + results);
+        
         mongoClient.close();
 
 		return results;
@@ -413,11 +476,16 @@ public class AVEXDB {
 		                
         BasicDBObject x = (BasicDBObject) athleteCollection.findOne(new BasicDBObject().append("_id",  new ObjectId(athleteID)));
 		
+        System.out.println("CURRENT QUEUE:" + x.getLong("currentqueue"));
+        System.out.println("USER QUEUE:" + userposition);
+        
         if(userposition == x.getLong("currentqueue")){
+        	System.out.println("READY FOR PROCESSING");	
             mongoClient.close();
         	return true;
         }
         else{
+        	System.out.println("NOT READY YET FOR PROCESSING");	
             mongoClient.close();
         	return false;
         }
@@ -426,12 +494,11 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-			System.out.println("Exception: " + ex.getMessage());
-			System.out.println("Stack Trace: " + ex.getStackTrace());
+			System.out.println("Class: AVEXDB - Method: CurrentQueue- Exception: " + ex.getMessage());
+			System.out.println("Class: AVEXDB - Method: CurrentQueue- Stack Trace: " + ex.getStackTrace());
 			return false;
 		}	
 	}
-	
 	
 	@SuppressWarnings("deprecation")
 	public List<BasicDBObject> GetOrders()
@@ -504,8 +571,10 @@ public class AVEXDB {
         	query.append("athleteid", pair.getKey());
 
             BasicDBObject setNewValue = new BasicDBObject().append("$push", new BasicDBObject().append("athletevalues", pair.getValue()));
+            BasicDBObject availablity = new BasicDBObject().append("$set", new BasicDBObject().append("isavailable", true));
 
             athleteCollect.update(query, setNewValue);
+            athleteCollect.update(query, availablity);
             System.out.println(pair.getKey() + " = " + pair.getValue());
             it.remove(); // avoids a ConcurrentModificationException
         }
@@ -597,15 +666,16 @@ public class AVEXDB {
     	
     	if (athleteObject != null)
     	{
-			double currentPrice = (double)(value.get("currentprice"));
+			Double currentPrice = Double.valueOf(String.valueOf(value.get("currentprice")));
 
             BasicDBObject setPrice = new BasicDBObject().append("$set", new BasicDBObject().append("currentprice", currentPrice));
             BasicDBObject priceHistory = new BasicDBObject().append("price",currentPrice);
             priceHistory.append("isathletevalueprice", true);
             priceHistory.append("recordstatusdate", new Date());
             priceHistory.append("recordstatus", 1);
-            setPrice.append("$push", new BasicDBObject().append("pricehistory", priceHistory));
+            BasicDBObject setHistory = new BasicDBObject().append("$push", new BasicDBObject().append("pricehistory", priceHistory));
             athleteCollect.update(queryFindAthlete, setPrice);
+            athleteCollect.update(queryFindAthlete, setHistory);
     	}   
 			
         mongoClient.close();
@@ -614,7 +684,45 @@ public class AVEXDB {
 		catch(Exception ex)
 		{
 	        mongoClient.close();
-			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Method:UpdateCurrentPrice Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void AthleteUnavailable(int athleteID){
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+		try{
+			System.out.println("Update Current Price for AthleteID: " + athleteID);	
+	        // Now connect to your databases
+			DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection athleteCollect = db.getCollection("athletes");
+        System.out.println("Collection athletes selected successfully");
+       
+    	BasicDBObject queryFindAthlete = new BasicDBObject();
+    	queryFindAthlete.append("athleteid", athleteID);
+        
+    	BasicDBObject athleteObject = (BasicDBObject) athleteCollect.findOne(queryFindAthlete);
+    	
+    	if (athleteObject != null)
+    	{
+            BasicDBObject availablity = new BasicDBObject().append("$set", new BasicDBObject().append("isavailable", false));
+            athleteCollect.update(queryFindAthlete, availablity);
+    	}   
+			
+        mongoClient.close();
+		
+		}
+		catch(Exception ex)
+		{
+	        mongoClient.close();
+			System.out.println("Method:UpdateCurrentPrice Exception: " + ex.getMessage());
 			System.out.println("Stack Trace: " + ex.getStackTrace());
 		}
 	}
@@ -739,4 +847,36 @@ public class AVEXDB {
         return output.toString();
     }
 	
+	public void UpdateAthleteImage(String athlete, BasicDBObject value){
+        // To connect to mongodb server
+        MongoClient mongoClient = new MongoClient(Program.DATABASE_CONNECTION , Program.DATABASE_PORT );
+		try
+		{
+		     System.out.println("Save Athlete Data: " + athlete);
+		// Now connect to your databases
+		DB db = mongoClient.getDB(Program.DATABASE_NAME);
+        System.out.println("Connect to database successfully");
+			
+        //boolean auth = db.authenticate(myUserName, myPassword);
+        //System.out.println("Authentication: "+auth);         
+			
+        DBCollection athleteCollect = db.getCollection("athletes");
+        System.out.println("Collection athletes selected successfully");
+		
+    	BasicDBObject queryFindAthlete = new BasicDBObject();
+    	queryFindAthlete.append("_id",  new ObjectId(athlete));
+    	
+    	if(!value.isEmpty()){    	athleteCollect.update(queryFindAthlete, value);    	}
+    	
+        mongoClient.close();
+        
+        System.out.println("Saved Athlete successfully");        
+		}
+		catch(Exception ex)
+		{
+	        mongoClient.close();
+			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Stack Trace: " + ex.getStackTrace());
+		}
+	}
 }
